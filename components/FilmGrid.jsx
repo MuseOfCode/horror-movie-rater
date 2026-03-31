@@ -1,37 +1,45 @@
-export default function FilmGrid({results}){
-    if (results.length === 0) return null
-
+export default function FilmGrid({ results, watchlist, onAdd }) {
+  if (results.length === 0) return null
 
   return (
     <section style={styles.wrapper}>
-      {results.map((movie) => (
-        <div key={movie.id} style={styles.card}>
-          {movie.poster_path ? (
-            <img
-              src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-              alt={movie.title}
-              style={styles.poster}
-            />
-          ) : (
-            <div style={styles.noPoster}>
-                {/* <img src="app/assets/images/no-image-available-icon-vector.jpg"/>
-                 */}
-                 No Image Available
-                </div>
-          )}
-          <div style={styles.info}>
-            <h2 style={styles.title}>{movie.title}</h2>
-            <p style={styles.year}>
-              {movie.release_date ? movie.release_date.slice(0, 4) : 'Unknown'}
-            </p>
-            <p style={styles.overview}>{movie.overview}</p>
+      {results.map((movie) => {
+        const isAdded = watchlist.some((m) => m.id === movie.id)
+
+        return (
+          <div key={movie.id} style={styles.card}>
+            {movie.poster_path ? (
+              <img
+                src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+                alt={movie.title}
+                style={styles.poster}
+              />
+            ) : (
+              <div style={styles.noPoster}>No Image</div>
+            )}
+            <div style={styles.info}>
+              <h2 style={styles.title}>{movie.title}</h2>
+              <p style={styles.year}>
+                {movie.release_date ? movie.release_date.slice(0, 4) : 'Unknown'}
+              </p>
+              <p style={styles.overview}>{movie.overview}</p>
+              <button
+                style={{
+                  ...styles.button,
+                  backgroundColor: isAdded ? '#333333' : '#cc0000',
+                  cursor: isAdded ? 'default' : 'pointer',
+                }}
+                onClick={() => !isAdded && onAdd(movie)}
+              >
+                {isAdded ? '✓ Added' : '+ Add to Watchlist'}
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </section>
   )
 }
-
 
 const styles = {
   wrapper: {
@@ -81,6 +89,15 @@ const styles = {
     WebkitLineClamp: 3,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
+    marginBottom: '12px',
+  },
+  button: {
+    width: '100%',
+    padding: '10px',
+    border: 'none',
+    borderRadius: '4px',
+    color: '#e8e8e8',
+    fontFamily: 'Georgia, serif',
+    fontSize: '0.9rem',
   },
 }
-
